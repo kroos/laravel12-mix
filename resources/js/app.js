@@ -44,6 +44,8 @@ require('./jquery');
 
 	require('./bootstrap');
 
+	window.config = require('./config/plugins').default;
+
 } catch (e) {
 	console.error('Error loading JavaScript dependencies:', e);
 }
