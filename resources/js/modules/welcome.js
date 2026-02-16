@@ -1,5 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
-const { routes, old, now } = window.PAGE;
+const { routes, old, now, errors } = window.data;
+function getError(name) {
+	return errors[name] ? errors[name][0] : null;
+}
 // console.log(moment(now).add(2, 'days').format('YYYY-MM-DD'));
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +29,7 @@ console.log('test');
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 $('#select2').select2({
-	...config.select2,
+		...config.select2,
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -190,10 +193,21 @@ $("#experience_wrap").addRemRow({
 	rowTemplate: (i, name) => `
 	<div class="col-sm-12 row g-3 m-1 exp" id="exp_${i}" CAttrib3="${i}">
 		<input type="hidden" name="${name}[${i}][id]" >
-		<div class="form-group form-floating col-sm-4">
-			<input type="text" name="${name}[${i}][name]" id="name_${i}" class="form-control " CAttrib2="customValue2_${i}">
+		<div class="form-group form-floating col-sm-4 ${getError(`${name}.${i}.name`) ? 'is-invalid' : ''}">
+			<input
+			 type="text"
+			 name="${name}[${i}][name]"
+			 id="name_${i}"
+			 class="form-control form-control-sm ${getError(`${name}.${i}.name`) ? 'is-invalid' : ''}"
+			 CAttrib2="customValue2_${i}"
+			>
 			<label for="name_${i}" class="form-col-label" CAttrib1="custom[${i}][Value1]">
 			Name : </label>
+			${getError(`${name}.${i}.name`) ? `
+			<div class="invalid-feedback">
+				${getError(`${name}.${i}.name`)}
+			</div>
+		` : ''}
 		</div>
 		<div id="gar_${i}" class="col-sm-4">
 		</div>
@@ -267,8 +281,6 @@ function populateCheckbox(i = 0, name = '', getCountries = []) {
 
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////
 // 2 tier dynamic input
 $("#skills_wrap").addRemRow({
@@ -287,19 +299,42 @@ $("#skills_wrap").addRemRow({
 	rowTemplate: (i, name) => `
 	<div class="col-sm-12 m-1 row border border-primary rounded skill" id="skill_${i}">
 		<input type="hidden" name="${name}[${i}][id]" value="">
-		<div class="col-sm-12 form-group m-0 row ">
+		<div class="col-sm-12 form-group m-0 row ${getError(`${name}.${i}.name`) ? 'is-invalid' : ''}">
 			<label for="name_${i}" class="form-col-label col-sm-3">Name #${i+1}</label>
 			<div class="col-sm-9 row" customName="${name}[${i}][customName]">
 				<div class="col-sm-10 my-auto" customIndex="${i}" customID="customID_${i}">
-					<input type="text" name="${name}[${i}][name]" value="" id="name_${i}" class="form-control form-control-sm " placeholder="Name ${i+1}">
+					<input
+					 type="text"
+					 name="${name}[${i}][name]"
+					 value=""
+					 id="name_${i}"
+					 class="form-control form-control-sm ${getError(`${name}.${i}.name`) ? 'is-invalid' : ''}"
+					 placeholder="Name ${i+1}"
+					>
+					${getError(`${name}.${i}.name`) ? `
+					<div class="invalid-feedback">
+						${getError(`${name}.${i}.name`)}
+					</div>
+				` : ''}
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-12 form-group m-0 row ">
+		<div class="col-sm-12 form-group m-0 row ${getError(`${name}.${i}.skill`) ? 'has-error' : ''}">
 			<label for="sk_${i}" class="form-col-label col-sm-3">Skill #${i+1}</label>
 			<div class="col-sm-9 row my-auto">
 				<div class="col-sm-10 m-0">
-					<input type="text" name="${name}[${i}][skill]" value="" id="sk_${i}" class="form-control form-control-sm " placeholder="Skill ${i+1}">
+					<input
+					 type="text"
+					 name="${name}[${i}][skill]"
+					 value="" id="sk_${i}"
+					 class="form-control form-control-sm ${getError(`${name}.${i}.skill`) ? 'is-invalid' : ''}"
+					 placeholder="Skill ${i+1}"
+					>
+					${getError(`${name}.${i}.skill`) ? `
+					<div class="invalid-feedback">
+						${getError(`${name}.${i}.skill`)}
+					</div>
+				` : ''}
 				</div>
 				<div class="col-sm-1 m-1">
 					<button class="btn btn-sm btn-outline-danger skill_remove" data-index="${i}">
@@ -352,17 +387,40 @@ $("#skills_wrap").addRemRow({
 			rowTemplate: (j, name) => `
 			<div class="col-sm-12 m-1 row border border-info-subtle rounded subskill_${i}" id="subskill_${i}_${j}">
 				<input type="hidden" name="${name}[${j}][id]" value="">
-				<div class="col-sm-12 form-group m-1 row">
+				<div class="col-sm-12 form-group m-1 row ${getError(`${name}.${i}.subskill`) ? 'has-error' : ''}">
 					<label for="sbsk_${j}" class="form-col-label col-sm-2">Sub-skill #${j+1}</label>
 					<div class="col-sm-8 my-auto">
-						<input type="text" name="${name}[${j}][subskill]" value="" id="sbsk_${j}" class="form-control form-control-sm " placeholder="Sub-skill ${j+1}">
+						<input
+						 type="text"
+						 name="${name}[${j}][subskill]"
+						 value=""
+						 id="sbsk_${j}"
+						 class="form-control form-control-sm ${getError(`${name}.${i}.subskill`) ? 'is-invalid' : ''}"
+						 placeholder="Sub-skill ${j+1}"
+						>
+						${getError(`${name}.${i}.subskill`) ? `
+						<div class="invalid-feedback">
+							${getError(`${name}.${i}.subskill`)}
+						</div>
+					` : ''}
 					</div>
 				</div>
 
-				<div class="col-sm-12 form-group m-1 row ">
+				<div class="col-sm-12 form-group m-1 row ${getError(`${name}.${i}.years`) ? 'has-error' : ''}">
 					<label for="sbsky_${j}" class="form-col-label col-sm-2">Years #${j+1}</label>
 					<div class="col-sm-8 my-auto">
-						<input type="text" name="${name}[${j}][years]" value="" id="sbsky_${j}" class="form-control form-control-sm " placeholder="Years ${j+1}">
+						<input
+						 type="text"
+						 name="${name}[${j}][years]"
+						 value="" id="sbsky_${j}"
+						 class="form-control form-control-sm ${getError(`${name}.${i}.years`) ? 'is-invalid' : ''}"
+						 placeholder="Years ${j+1}"
+						>
+						${getError(`${name}.${i}.years`) ? `
+						<div class="invalid-feedback">
+							${getError(`${name}.${i}.years`)}
+						</div>
+					` : ''}
 					</div>
 					<div class="col-sm-1">
 						<button class="btn btn-sm btn-outline-danger subskill_remove" data-index="${j}">
@@ -394,7 +452,6 @@ $("#skills_wrap").addRemRow({
 					}
 				});
 
-
 			},
 			onRemove: async (j, event, $row2, name) => {
 				console.log("Sub-skill removed:", `skill_${i}_${j}`);
@@ -402,7 +459,7 @@ $("#skills_wrap").addRemRow({
 				const $field1 = $row2.find(`[name="${name}[${j}][subskill]"]`);
 				const $field2 = $row2.find(`[name="${name}[${j}][years]`);
 
-				const idv = $row2.find(`input[name="${name}[${j}][id]"]`).val();
+				const idv = $row2.find(`[name="${name}[${j}][id]"]`).val();
 				if (!idv) {
 					$('#form').bootstrapValidator('removeField', $field1);
 					$('#form').bootstrapValidator('removeField', $field2);
@@ -500,21 +557,39 @@ $("#countries_wrap").addRemRow({
 	rowTemplate: (i, name) => `
 		<div class="col-sm-12 row m-0 my-1 border border-warning-subtle rounded ctry" id="ctry_${i}">
 			<input type="hidden" name="${name}[${i}][id]" value="">
-			<div class="col-sm-10 form-group row m-0 my-1 ">
+			<div class="col-sm-10 form-group row m-0 my-1 ${getError(`${name}.${i}.country_id`) ? 'has-error' : ''}">
 				<label for="country_${i}" class="col-sm-2 form-col-label">Country : </label>
 				<div class="col-sm-10">
-					<select name="${name}[${i}][country_id]" id="country_${i}" class="form-select form-select-sm ">
+					<select
+					 name="${name}[${i}][country_id]"
+					 id="country_${i}"
+					 class="form-select form-select-sm ${getError(`${name}.${i}.country_id`) ? 'is-invalid' : ''}"
+					>
 						<option value="">Please choose</option>
 					</select>
+					${getError(`${name}.${i}.country_id`) ? `
+					<div class="invalid-feedback">
+						${getError(`${name}.${i}.country_id`)}
+					</div>
+				` : ''}
 				</div>
 			</div>
-			<div class="col-sm-10 form-group row m-0 my-1 ">
+			<div class="col-sm-10 form-group row m-0 my-1 ${getError(`${name}.${i}.state_id`) ? 'has-error' : ''}">
 				<input type="hidden" name="${name}[${i}][id]" value="">
 				<label for="state_${i}" class="col-sm-2 form-col-label">State : </label>
 				<div class="col-sm-9 my-auto">
-					<select name="${name}[${i}][state_id]" id="state_${i}" class="form-select form-select-sm ">
+					<select
+					 name="${name}[${i}][state_id]"
+					 id="state_${i}"
+					 class="form-select form-select-sm ${getError(`${name}.${i}.state_id`) ? 'is-invalid' : ''}"
+					>
 						<option value="">Please choose</option>
 					</select>
+					${getError(`${name}.${i}.state_id`) ? `
+					<div class="invalid-feedback">
+						${getError(`${name}.${i}.state_id`)}
+					</div>
+				` : ''}
 				</div>
 				<div class="col-sm-1">
 					<button class="btn btn-sm btn-outline-danger country_remove" data-index="${i}">
@@ -594,11 +669,7 @@ $("#countries_wrap").addRemRow({
 				const countryId = sel.closest('.row').find('select[id^="country_"]').val();
 				if (countryId) {
 					sel.select2({
-						placeholder: 'Select State',
-						theme: 'bootstrap-5',
-						width: '100%',
-						allowClear: true,
-						closeOnSelect: true,
+						...config.select2,
 						ajax: {
 							url: `${routes.states}/${countryId}`,
 							dataType: 'json',
